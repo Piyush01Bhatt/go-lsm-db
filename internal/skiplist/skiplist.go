@@ -20,6 +20,10 @@ type Skiplist struct {
 	level int
 }
 
+type SkiplistIterator struct {
+	current *Node
+}
+
 func NewNode(key string, value string, level int) *Node {
 	return &Node{
 		key:   key,
@@ -130,4 +134,25 @@ func (sl *Skiplist) Print() {
 		result := strings.Join(data, "->")
 		fmt.Println(result)
 	}
+}
+
+func (sl *Skiplist) Iterator() *SkiplistIterator {
+	return &SkiplistIterator{current: sl.head}
+}
+
+func (it *SkiplistIterator) HasNext() bool {
+	return it.current != nil && it.current.next[0] != nil
+}
+
+func (sli *SkiplistIterator) Next() {
+	if sli.HasNext() {
+		sli.current = sli.current.next[0]
+	}
+}
+
+func (it *SkiplistIterator) KeyValue() (string, string) {
+	if it.current != nil {
+		return it.current.key, it.current.value
+	}
+	return "", ""
 }
