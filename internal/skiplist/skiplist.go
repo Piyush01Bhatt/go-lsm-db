@@ -44,6 +44,14 @@ func randomLevel() int {
 	return level
 }
 
+func (sl *Skiplist) shrink() {
+	for i := sl.level - 1; i >= 0; i-- {
+		if sl.head.next[i] == nil {
+			sl.level -= 1
+		}
+	}
+}
+
 func (sl *Skiplist) search(key string) (*Node, [MAXLEVEL]*Node) {
 	var journey [MAXLEVEL]*Node
 	start := sl.head
@@ -87,6 +95,23 @@ func (sl *Skiplist) Insert(key, value string) {
 	if sl.level < level {
 		sl.level = level
 	}
+}
+
+func (sl *Skiplist) Delete(key string) error {
+	found, journey := sl.search(key)
+	if found == nil {
+		return errors.New("key not found")
+	}
+	for i := sl.level - 1; i >= 0; i-- {
+		if journey[i].next[i] != found {
+			continue
+		}
+		journey[i].next[i] = found.next[i]
+		found.next[i] = nil
+	}
+	found = nil
+	sl.shrink()
+	return nil
 }
 
 func (sl *Skiplist) Print() {

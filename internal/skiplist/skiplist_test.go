@@ -40,6 +40,27 @@ func TestSkiplist(t *testing.T) {
 			expVal:   "",
 			expErr:   true,
 		},
+		{
+			name:     "Successfully delete a key and its value",
+			funcType: "DELETE",
+			argKey:   "F",
+			expVal:   "",
+			expErr:   false,
+		},
+		{
+			name:     "Key deleted, not found",
+			funcType: "FIND",
+			argKey:   "F",
+			expVal:   "6",
+			expErr:   true,
+		},
+		{
+			name:     "Key not found to delete",
+			funcType: "DELETE",
+			argKey:   "F",
+			expVal:   "6",
+			expErr:   true,
+		},
 	}
 
 	for _, tc := range tests {
@@ -49,6 +70,8 @@ func TestSkiplist(t *testing.T) {
 			switch tc.funcType {
 			case "FIND":
 				result, err = sls.Find(tc.argKey)
+			case "DELETE":
+				err = sls.Delete(tc.argKey)
 			default:
 				t.Fatalf("Unknown method %s", tc.funcType)
 			}
