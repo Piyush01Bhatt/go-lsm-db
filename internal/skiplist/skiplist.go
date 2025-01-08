@@ -137,16 +137,16 @@ func (sl *Skiplist) Print() {
 }
 
 func (sl *Skiplist) Iterator() *SkiplistIterator {
-	return &SkiplistIterator{current: sl.head}
+	return &SkiplistIterator{current: sl.head.next[0]}
 }
 
 func (it *SkiplistIterator) HasNext() bool {
-	return it.current != nil && it.current.next[0] != nil
+	return it.current != nil
 }
 
-func (sli *SkiplistIterator) Next() {
-	if sli.HasNext() {
-		sli.current = sli.current.next[0]
+func (it *SkiplistIterator) Next() {
+	if it.HasNext() {
+		it.current = it.current.next[0]
 	}
 }
 
