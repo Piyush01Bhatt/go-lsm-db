@@ -59,8 +59,13 @@ func (sstab *SSTable) Write() error {
 		}
 
 		// Write the key's index (key offset) to the index file
-		indexEntry := fmt.Sprintf("%s:%d", key, offset)
-		if _, err := sstab.indexFile.Write([]byte(indexEntry + "\n")); err != nil {
+		indexEntry := fmt.Sprintf("%s:", key)
+		offsetBytes := make([]byte, 8)
+		binary.LittleEndian.PutUint64(offsetBytes, uint64(offset))
+		// Concatenate the key string with the binary offset
+		entry := append([]byte(indexEntry), offsetBytes...)
+		entry = append(entry, '\n') // Add newline
+		if _, err := sstab.indexFile.Write(entry); err != nil {
 			return fmt.Errorf("failed to write index entry: %v", err)
 		}
 
