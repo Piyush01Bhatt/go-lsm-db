@@ -61,8 +61,9 @@ func (l *Lexer) readString() string {
 	for l.ch != '\'' && l.ch != 0 {
 		l.readChar()
 	}
+	end := l.idx
 	l.readChar() // skips reading last \'
-	return l.input[start:l.idx]
+	return l.input[start:end]
 }
 
 func (l *Lexer) readNumber() string {
@@ -120,4 +121,16 @@ func (l *Lexer) NextToken() Token {
 		l.readChar()
 		return Token{Type: TokenEOF, Value: ""}
 	}
+}
+
+func (l *Lexer) Tokens() []Token {
+	var tokens []Token
+	for {
+		token := l.NextToken()
+		if token.Type == TokenEOF {
+			break
+		}
+		tokens = append(tokens, token)
+	}
+	return tokens
 }

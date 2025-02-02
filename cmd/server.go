@@ -8,14 +8,7 @@ import (
 
 func main() {
 	fmt.Println("Your server code goes here.")
-	lexer := langparser.NewLexer("select name,")
-	var tokens []langparser.Token
-	for {
-		token := lexer.NextToken()
-		if token.Type == langparser.TokenEOF {
-			break
-		}
-		tokens = append(tokens, token)
-	}
+	lexer := langparser.NewLexer("select name,roll from class where section = 'A'")
+	tokens := lexer.Tokens()
 	fmt.Println(tokens)
 }
